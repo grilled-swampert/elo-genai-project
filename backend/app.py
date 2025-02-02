@@ -63,7 +63,7 @@
 
 import os
 import asyncio
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from dotenv import load_dotenv
 from data_pipeline.ingest_portfolio import process_portfolio
@@ -94,8 +94,8 @@ except Exception as e:
 
 
 # Initialize Flask app
-# app = Flask(__name__)
-# CORS(app)
+app = Flask(__name__)
+CORS(app)
 
 # Check if functions are async, then wrap them in sync calls
 try:
@@ -170,7 +170,7 @@ def clean_data(df):
     
     return df[REQUIRED_COLUMNS]
 
-# @app.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
@@ -181,7 +181,57 @@ def upload_file():
 
     try:
         # ✅ Read file
-        df = pd.read_csv(file) if file.filename.endswith(".csv") else pd.read_excel(file)
+        
+
+        """Handles portfolio file upload and performs market/news analysis."""
+    
+        if 'file' not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+
+        # Process portfolio file
+        portfolio_file = request.files['file']
+
+        # portfolio_file = r"C:\Users\Eshaan\Downloads\elo-genai-project\backend\data_pipeline\iport.csv"
+        portfolio, error = process_portfolio(portfolio_file)
+        
+        # if error:
+        #     return jsonify({"error": error}), 400
+
+        results = []
+
+        for holding in portfolio:
+            try:
+                ticker = holding['ticker']
+                print(f"🔍 Processing {ticker}...")
+
+                # Ensure data is fetched synchronously
+                market_data = get_market_data_sync(ticker)
+                # print(f"📈 Market Data for {ticker}: {market_data}")
+
+                news_analysis = fetch_nse_news_sync(ticker)
+                # print(f"📰 News Analysis for {ticker}: {news_analysis}")
+
+                # Prepare analysis context
+                context = {
+                    "ticker": ticker,
+                    "market_trends": market_data,
+                    "news_summary": news_analysis,
+                }
+                
+                # Perform stock analysis
+                # analysis = None
+                analysis = generate_stock_analysis(context)
+                print(f"📊 Stock Analysis for {ticker}: {analysis}")
+
+                results.append(analysis)
+
+            except Exception as e:
+                results.append({
+                    "ticker": ticker,
+                    "error": str(e)
+                })
+
+        df = pd.read_csv(r"C:\Users\Eshaan\Downloads\elo-genai-project\frontend\GFC_yearly_data.csv")
 
         print("\nOriginal columns:", df.columns.tolist())  # Debugging info
 
@@ -192,8 +242,7 @@ def upload_file():
         print("First row:", df.iloc[0].to_dict())  # Debugging info
 
         # ✅ Store in database (only if collection exists)
-        if collection is not None:
-            collection.insert_many(df.to_dict(orient="records"))
+
 
         # ✅ Generate report
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -208,28 +257,29 @@ def upload_file():
             avg_stock_price=df["Stock Price ($)"].mean(),
             expenses=df["Expenses (in million $)"].sum()
         )
-
+        
         return jsonify({
-            "pdfUrl": f"http://127.0.0.1:5000/download/{filename}",
-            "filename": filename
-        })
+        "pdfUrl": f"http://127.0.0.1:5000/download/{filename}",
+        "filename": filename
+    })
 
     except Exception as e:
         print(f"Error trace: {str(e)}")
         return jsonify({"error": f"Processing failed: {str(e)}"}), 500
 
-# @app.route("/download/<filename>", methods=["GET"])
-# def download_file(filename):
-#     """Handles PDF downloads properly."""
-#     file_path = os.path.join("reports", filename)
-#     if os.path.exists(file_path):
-#         return send_file(
-#             file_path,
-#             as_attachment=True,
-#             mimetype="application/pdf",  # ✅ Correct MIME type for PDF
-#             download_name=filename
-#         )
-#     return jsonify({"error": "File not found"}), 404
+
+@app.route("/download/<filename>", methods=["GET"])
+def download_file(filename):
+    """Handles PDF downloads properly."""
+    file_path = os.path.join("reports", filename)
+    if os.path.exists(file_path):
+        return send_file(
+            file_path,
+            as_attachment=True,
+            mimetype="application/pdf",  # ✅ Correct MIME type for PDF
+            download_name=filename
+        )
+    return jsonify({"error": "File not found"}), 404
 
 
 
@@ -237,58 +287,58 @@ def upload_file():
 
 
 
-# @app.route('/analyze', methods=['POST'])
-def analyze():
-    """Handles portfolio file upload and performs market/news analysis."""
+# # @app.route('/analyze', methods=['POST'])
+# def analyze():
+#     """Handles portfolio file upload and performs market/news analysis."""
     
-    # if 'file' not in request.files:
-    #     return jsonify({"error": "No file uploaded"}), 400
+#     # if 'file' not in request.files:
+#     #     return jsonify({"error": "No file uploaded"}), 400
 
-    # # Process portfolio file
-    # portfolio_file = request.files['file']
+#     # # Process portfolio file
+#     # portfolio_file = request.files['file']
 
-    portfolio_file = r"C:\Users\Eshaan\Downloads\elo-genai-project\backend\data_pipeline\iport.csv"
-    portfolio, error = process_portfolio(portfolio_file)
+#     portfolio_file = r"C:\Users\Eshaan\Downloads\elo-genai-project\backend\data_pipeline\iport.csv"
+#     portfolio, error = process_portfolio(portfolio_file)
     
-    # if error:
-    #     return jsonify({"error": error}), 400
+#     # if error:
+#     #     return jsonify({"error": error}), 400
 
-    results = []
+#     results = []
 
-    for holding in portfolio:
-        try:
-            ticker = holding['ticker']
-            print(f"🔍 Processing {ticker}...")
+#     for holding in portfolio:
+#         try:
+#             ticker = holding['ticker']
+#             print(f"🔍 Processing {ticker}...")
 
-            # Ensure data is fetched synchronously
-            market_data = get_market_data_sync(ticker)
-            print(f"📈 Market Data for {ticker}: {market_data}")
+#             # Ensure data is fetched synchronously
+#             market_data = get_market_data_sync(ticker)
+#             print(f"📈 Market Data for {ticker}: {market_data}")
 
-            news_analysis = fetch_nse_news_sync(ticker)
-            print(f"📰 News Analysis for {ticker}: {news_analysis}")
+#             news_analysis = fetch_nse_news_sync(ticker)
+#             print(f"📰 News Analysis for {ticker}: {news_analysis}")
 
-            # Prepare analysis context
-            context = {
-                "ticker": ticker,
-                "market_trends": market_data,
-                "news_summary": news_analysis,
-            }
+#             # Prepare analysis context
+#             context = {
+#                 "ticker": ticker,
+#                 "market_trends": market_data,
+#                 "news_summary": news_analysis,
+#             }
             
-            # Perform stock analysis
-            # analysis = None
-            analysis = generate_stock_analysis(context)
-            print(f"📊 Stock Analysis for {ticker}: {analysis}")
+#             # Perform stock analysis
+#             # analysis = None
+#             analysis = generate_stock_analysis(context)
+#             print(f"📊 Stock Analysis for {ticker}: {analysis}")
 
-            results.append(analysis)
+#             results.append(analysis)
 
-        except Exception as e:
-            results.append({
-                "ticker": ticker,
-                "error": str(e)
-            })
+#         except Exception as e:
+#             results.append({
+#                 "ticker": ticker,
+#                 "error": str(e)
+#             })
     
-    # return jsonify(results)
+#     # return jsonify(results)
 
 if __name__ == '__main__':
-    # app.run(host='0.0.0.0', port=5000, debug=True)
-    analyze()
+    app.run(host='0.0.0.0', port=5000, debug=True)
+    # analyze()
