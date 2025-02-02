@@ -72,7 +72,7 @@ from data_pipeline.ingest_news import fetch_nse_news_newsapi
 from data_pipeline.data_preparation import generate_stock_analysis
 from pymongo import MongoClient
 import pandas as pd
-import datetime
+from datetime import datetime
 import re
 import matplotlib
 from report_generator import create_financial_report
@@ -238,8 +238,11 @@ def upload_file():
         # ✅ Clean and validate data
         df = clean_data(df)
 
+        if df.empty:
+            print("Test")
+
         print("Cleaned columns:", df.columns.tolist())  # Debugging info
-        print("First row:", df.iloc[0].to_dict())  # Debugging info
+        # print("First row:", df.iloc[0].to_dict())  # Debugging info
 
         # ✅ Store in database (only if collection exists)
 
