@@ -1,0 +1,7 @@
+flask;
+pandas;
+ pymongo;
+  openai;
+   matplotlib;
+    reportlab;
+     python-dotenv
