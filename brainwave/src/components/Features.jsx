@@ -66,80 +66,41 @@ const Features = () => {
   return (
     <section className="bg-black pb-52" id="news">
       <div className="container mx-auto px-3 md:px-10">
-        <div className="px-5 py-32">
-          <p className="font-circular-web text-lg text-blue-50">
-            Into the fkng darkness
-          </p>
-          <p className="max-w-md font-circular-web text-lg text-blue-50 opacity-50">
-            wertyuiopoiuytrewqwertyuioiuytrewqertyuiuytrewertyu
-            juytrewertyuiuytrfedwqertyuytgrfedwqertyuytgrfedwqsd fvbghjq
-          </p>
-        </div>
         <BentoTilt className="border-hsla relative me-4 mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
           <BentoCard
-            src="videos/feature-1.mp4"
+            src="videos/new.webm"
             title={
               <>
                 radia<b>n</b>t
               </>
             }
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et purus sed dolor consectetur efficitur. Nulla facilisi. Nulla facilisi. Nulla facilisi."
+            description="India's economy continues to demonstrate resilience, with strong growth driven by manufacturing, infrastructure, and digital transformation. The government’s focus on self-reliance (Aatmanirbhar Bharat) and structural reforms has bolstered investor confidence, attracting FDI and fostering innovation across sectors."
             isComingSoon={true}
           />
         </BentoTilt>
-        <div className="grid h-[135vh] me-4 grid-cols-2 grid-rows-3 gap-7">
-          <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
-            <BentoCard
-              src="videos/feature-2.mp4"
-              title={
-                <>
-                  radia<b>n</b>t
-                </>
-              }
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et purus sed dolor consectetur efficitur. Nulla facilisi. Nulla facilisi. Nulla facilisi."
-              isComingSoon={true}
-            />
-          </BentoTilt>
+        <div className="grid h-[135vh] me-4 grid-cols-2 grid-rows-1 gap-7">
           <BentoTilt className="bento-tlt_1 row-span-1 md:col-span-1 sm:col-span-2">
             <BentoCard
-              src="videos/feature-3.mp4"
+              src="videos/3.mp4"
               title={
                 <>
                   radia<b>n</b>t
                 </>
               }
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et purus sed dolor consectetur efficitur. Nulla facilisi. Nulla facilisi. Nulla facilisi."
+              description="Mutual funds in India continue to grow in popularity, with SIP (Systematic Investment Plan) inflows reaching record highs. Retail investors are increasingly opting for equity and hybrid funds for long-term wealth creation, while thematic funds (e.g., green energy, AI, and healthcare) are gaining traction due to India's evolving investment landscape."
               isComingSoon={true}
             />
           </BentoTilt>
           <BentoTilt className="bento-tlt_1 me-4 md:col-span-1 sm:col-span-2">
             <BentoCard
-              src="videos/feature-4.mp4"
+              src="videos/2.mp4"
               title={
                 <>
                   radia<b>n</b>t
                 </>
               }
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et purus sed dolor consectetur efficitur. Nulla facilisi. Nulla facilisi. Nulla facilisi."
+              description="India's stock markets, led by the Nifty and Sensex, are witnessing robust performance despite global economic challenges. Sectors like IT, banking, and renewable energy are driving growth, with increased participation from retail investors and rising trends in sustainable investing (ESG-focused portfolios"
               isComingSoon={true}
-            />
-          </BentoTilt>
-          <BentoTilt className="bento-tilt_2">
-            <div className="flex size-full flex-col justify-between bg-violet-300 p-5">
-              <h1 className="bento-title special-font max-w-64 text-black">
-                M<b>o</b>re c<b>o</b>ming s<b>oo</b>n!
-              </h1>
-              <TiLocationArrow className="m-5 scale-[5] self-end" />
-            </div>
-          </BentoTilt>
-
-          <BentoTilt className="bento-tilt_2">
-            <video
-              src="videos/feature-5.mp4"
-              loop
-              muted
-              autoPlay
-              className="absolute left-0 top-0 size-full object-cover object-center"
             />
           </BentoTilt>
         </div>
