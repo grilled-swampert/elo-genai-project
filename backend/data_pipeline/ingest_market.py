@@ -8,7 +8,6 @@ def get_market_data(ticker):
         url = f"https://financialmodelingprep.com/api/v3/historical-price-full/{ticker}?apikey={api_key}"
         data = requests.get(url).json()
         data['historical'] = data['historical'][:14]
-        print("market")
 
         # print(data)
         # quote = data.get('Global Quote', {})
@@ -16,6 +15,8 @@ def get_market_data(ticker):
         #     'price': quote.get('05. price', 'N/A'),
         #     'change': quote.get('10. change percent', 'N/A')
         # }
+
+        return data
     except:
         return {'error': 'Failed to fetch market data'}
     

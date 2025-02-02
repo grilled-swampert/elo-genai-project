@@ -27,7 +27,7 @@ Generate JSON output with:
 2. majority_consensus_news: Overall market sentiment from news (1 sentence)
 3. hot_in_sector: Top 3 trending stocks in identified sector
 4. status_summary: Market position analysis (2-3 sentences with compulsory numerical (you can come up with realistic numbers yourself) probabilistic/confidence interval consistencies and reasonings)
-5. action: Specific recommended trade action with rationale (2-3 sentences)
+5. action: Specific recommended trade action with rationale (2-3 sentences with suggestions specific to the capital invested and quantitative )
 6. use rupees as the currency in your outputs wherever any price is involved
 
 Example Output:
@@ -61,16 +61,7 @@ JSON Output:
         })
         
         print(result)
-        return parse_json(result)
+        return result
     
     except Exception as e:
         return {"error": str(e)}
-
-def parse_json(text):
-    try:
-        # Extract JSON using more robust pattern matching
-        json_str = text.split('JSON Output:')[-1].strip()
-        json_str = json_str[json_str.find('{'):json_str.rfind('}')+1]
-        return json.loads(json_str)
-    except Exception as e:
-        return {"error": f"JSON parsing failed: {str(e)}"}

@@ -7,9 +7,8 @@ news_api_key = "fa4a9d7493f84261a83c4d6a586ec31d"
 
 def fetch_nse_news_newsapi(ticker):
     """Fetch latest news articles for NSE-listed stocks using NewsAPI.org"""
-    print(ticker, "hello")
     
-    url = f"https://newsapi.org/v2/everything?q={ticker} NSE India&sortBy=publishedAt&apiKey={news_api_key}"
+    url = f"https://newsapi.org/v2/everything?q={ticker}&language=en&sortBy=publishedAt&apiKey={news_api_key}"
 
     response = requests.get(url)
     data = response.json()
@@ -40,8 +39,6 @@ def fetch_nse_news_newsapi(ticker):
 
     for article in news_articles:
         article["content"] = scrape_news_content(article["url"])
-
-    print(news_articles)
 
     return news_articles
 

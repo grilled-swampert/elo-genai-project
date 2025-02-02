@@ -1,1 +1,0 @@
-analysis = generate_stock_analysis(context)
